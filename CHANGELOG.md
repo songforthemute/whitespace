@@ -14,6 +14,9 @@
 - 404 페이지
 - 사이트 설정 상수화 (`src/config.ts`)
 - Pagefind 검색 통합
+- OG Image 동적 생성 (Cloudflare Pages Functions)
+- SEO 메타 태그 (canonical, OG, Twitter Card)
+- GitHub Actions 배포 워크플로우
 
 ## [0.1.0] - 2025-01-24
 
