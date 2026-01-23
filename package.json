@@ -8,7 +8,8 @@
 	"packageManager": "pnpm@10.13.1",
 	"scripts": {
 		"dev": "astro dev",
-		"build": "astro build",
+		"build": "tsx scripts/build.ts",
+		"build:astro": "astro build",
 		"preview": "astro preview",
 		"fetch:notion": "tsx scripts/fetch-notion.ts",
 		"test": "vitest",
