@@ -1,12 +1,12 @@
 import "dotenv/config";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { Client } from "@notionhq/client";
 import type {
 	BlockObjectResponse,
 	PageObjectResponse,
 	RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -33,28 +33,20 @@ function extractPostProperties(page: PageObjectResponse): Omit<Post, "blocks"> {
 	const props = page.properties;
 
 	const titleProp = props.Title;
-	const title =
-		titleProp.type === "title" ? getRichTextContent(titleProp.title) : "";
+	const title = titleProp.type === "title" ? getRichTextContent(titleProp.title) : "";
 
 	const slugProp = props.Slug;
-	const slug =
-		slugProp.type === "rich_text" ? getRichTextContent(slugProp.rich_text) : "";
+	const slug = slugProp.type === "rich_text" ? getRichTextContent(slugProp.rich_text) : "";
 
 	const statusProp = props.Status;
-	const status =
-		statusProp.type === "status" ? (statusProp.status?.name ?? "") : "";
+	const status = statusProp.type === "status" ? (statusProp.status?.name ?? "") : "";
 
 	const descProp = props.Description;
 	const description =
-		descProp?.type === "rich_text"
-			? getRichTextContent(descProp.rich_text) || null
-			: null;
+		descProp?.type === "rich_text" ? getRichTextContent(descProp.rich_text) || null : null;
 
 	const tagsProp = props.Tags;
-	const tags =
-		tagsProp?.type === "multi_select"
-			? tagsProp.multi_select.map((t) => t.name)
-			: [];
+	const tags = tagsProp?.type === "multi_select" ? tagsProp.multi_select.map((t) => t.name) : [];
 
 	const lastUpdatedProp = props["Last Updated"];
 	const lastUpdated =
@@ -76,10 +68,7 @@ function extractPostProperties(page: PageObjectResponse): Omit<Post, "blocks"> {
 	};
 }
 
-async function getBlocksRecursive(
-	notion: Client,
-	blockId: string,
-): Promise<BlockObjectResponse[]> {
+async function getBlocksRecursive(notion: Client, blockId: string): Promise<BlockObjectResponse[]> {
 	const blocks: BlockObjectResponse[] = [];
 	let cursor: string | undefined;
 
@@ -103,7 +92,7 @@ async function getBlocksRecursive(
 			blocks.push(b);
 		}
 
-		cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+		cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
 	} while (cursor);
 
 	return blocks;
@@ -120,10 +109,7 @@ async function getDataSourceId(notion: Client, databaseId: string): Promise<stri
 	return dataSources[0].id;
 }
 
-async function fetchPublishedPosts(
-	notion: Client,
-	dataSourceId: string,
-): Promise<Post[]> {
+async function fetchPublishedPosts(notion: Client, dataSourceId: string): Promise<Post[]> {
 	const posts: Post[] = [];
 	let cursor: string | undefined;
 
@@ -156,7 +142,7 @@ async function fetchPublishedPosts(
 			posts.push({ ...postMeta, blocks });
 		}
 
-		cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+		cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
 	} while (cursor);
 
 	return posts;

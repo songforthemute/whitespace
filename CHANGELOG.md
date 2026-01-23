@@ -6,6 +6,7 @@
 
 ### Added
 - `fetch:notion` 스크립트 (Notion API v5)
+- Block → HTML 변환 모듈 (TDD)
 
 ## [0.1.0] - 2025-01-24
 
