@@ -105,18 +105,13 @@ Properties:
     type: select
     required: true
     options:
-      - "작성 중"
-      - "출판됨"
-      - "아카이브됨"
+      - "Draft"
+      - "Published"
+      - "Archived"
     build_behavior:
-      - "작성 중": 빌드 제외
-      - "출판됨": 빌드 포함
-      - "아카이브됨": 빌드 제외 → 404 발생
-  
-  Published Date:
-    type: date
-    required: when Status = "출판됨"
-    display: 항상 표시
+      - "Draft": 빌드 제외
+      - "Published": 빌드 포함
+      - "Archived": 빌드 제외 → 404 발생
   
   Last Updated:
     type: date
@@ -157,7 +152,7 @@ GET https://blog-webhook.coco.workers.dev/trigger?page_id={id}
   ↓
 Cloudflare Workers
   ├─ Notion API로 Status 확인
-  ├─ "출판됨" 아니면 거부 (400 응답)
+  ├─ "Published" 아니면 거부 (400 응답)
   └─ GitHub repository_dispatch 트리거
   ↓
 POST https://api.github.com/repos/{owner}/{repo}/dispatches
@@ -180,41 +175,53 @@ Cloudflare Pages (배포)
 #### 개요
 - **활성화:** 항상 (CI & 로컬)
 - **기준:** `last_edited_time` > 마지막 빌드 시간
-- **상태 저장:** `data/last-build.json`
+- **상태 저장:**
+  - `data/last-build.json` - 마지막 빌드 시간
+  - `data/published-dates.json` - 글별 첫 출판일
 
 #### 빌드 프로세스
 
 ```javascript
 async function build() {
-  // 1. 마지막 빌드 시간 로드
+  // 1. 상태 파일 로드
   const lastBuild = loadLastBuildTime() || '1970-01-01T00:00:00.000Z';
-  
-  // 2. Notion에서 "출판됨" 글 전체 조회
+  const publishedDates = loadPublishedDates() || {};
+
+  // 2. Notion에서 "Published" 글 전체 조회
   const allPosts = await fetchPublishedPosts();
-  
-  // 3. 변경된 글 필터링
-  const changedPosts = allPosts.filter(post => 
+
+  // 3. 첫 출판 글에 출판일 부여
+  for (const post of allPosts) {
+    const slug = getSlug(post);
+    if (!publishedDates[slug]) {
+      publishedDates[slug] = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  // 4. 변경된 글 필터링
+  const changedPosts = allPosts.filter(post =>
     new Date(post.last_edited_time) > new Date(lastBuild)
   );
-  
-  // 4. 변경된 글만 빌드
+
+  // 5. 변경된 글만 빌드
   for (const post of changedPosts) {
-    await buildPost(post);
+    await buildPost(post, publishedDates);
   }
-  
-  // 5. 삭제된 글 처리 (전체 동기화)
-  await syncDeletedPosts(allPosts);
-  
-  // 6. 메타 파일 생성 (항상)
-  await generateIndexPage(allPosts);
-  await generateRSS(allPosts);
-  await generateSitemap(allPosts);
-  
-  // 7. Pagefind 인덱싱
+
+  // 6. 삭제된 글 처리 (전체 동기화)
+  await syncDeletedPosts(allPosts, publishedDates);
+
+  // 7. 메타 파일 생성 (항상)
+  await generateIndexPage(allPosts, publishedDates);
+  await generateRSS(allPosts, publishedDates);
+  await generateSitemap(allPosts, publishedDates);
+
+  // 8. Pagefind 인덱싱
   await runPagefind();
-  
-  // 8. 빌드 시간 저장
+
+  // 9. 상태 저장
   saveLastBuildTime(new Date().toISOString());
+  savePublishedDates(publishedDates);
 }
 ```
 
@@ -317,13 +324,13 @@ async function buildPost(post) {
 ### 5.5 Deleted Posts Sync
 
 #### 문제
-증분 빌드는 변경된 글만 확인하므로, Status가 "아카이브됨"으로 변경된 글의 HTML이 남아있을 수 있음.
+증분 빌드는 변경된 글만 확인하므로, Status가 "Archived"으로 변경된 글의 HTML이 남아있을 수 있음.
 
 #### 해결: 전체 동기화
 
 ```javascript
 async function syncDeletedPosts(currentPosts) {
-  // 1. 현재 "출판됨" 상태인 글들의 slug 세트
+  // 1. 현재 "Published" 상태인 글들의 slug 세트
   const currentSlugs = new Set(
     currentPosts.map(p => p.properties.Slug.rich_text[0].plain_text)
   );
@@ -486,7 +493,7 @@ export async function onRequest({ request }) {
 
 ```yaml
 파일: /sitemap.xml
-포함: 모든 "출판됨" 글
+포함: 모든 "Published" 글
 정보:
   - <loc>: URL
   - <lastmod>: Last Updated 또는 Published Date
@@ -841,6 +848,7 @@ blog/
 │   └── fetch-notion.js
 ├── data/
 │   ├── last-build.json
+│   ├── published-dates.json
 │   └── posts.json
 ├── dist/
 │   ├── index.html
@@ -865,6 +873,7 @@ blog/
 |---------|------|---------|
 | 1.0 Draft | 2025-01-22 | Initial PRD creation |
 | 1.1 Draft | 2025-01-24 | Node 24 + pnpm으로 변경 |
+| 1.2 Draft | 2025-01-24 | Published Date → 빌드 시 자동 부여 방식으로 변경 |
 
 ---
 
