@@ -53,8 +53,8 @@
 - 이유: Zero-JS 출력, HTML 시맨틱 최적화, 빠른 빌드
 
 ### Content Source
-- **Notion API**
-- Database Query → Blocks Retrieval → HTML 생성
+- **Notion API v5** (@notionhq/client 5.x)
+- dataSources.query → Blocks Retrieval → HTML 생성
 
 ### Hosting
 - **Cloudflare Pages**
@@ -102,7 +102,7 @@ Properties:
     example: "build-blog-with-astro"
   
   Status:
-    type: select
+    type: status
     required: true
     options:
       - "Draft"
@@ -112,11 +112,10 @@ Properties:
       - "Draft": 빌드 제외
       - "Published": 빌드 포함
       - "Archived": 빌드 제외 → 404 발생
-  
+
   Last Updated:
-    type: date
-    optional: true
-    manual: 의미있는 업데이트만 기록
+    type: last_edited_time
+    auto: Notion 자동 관리
     display: 있으면 표시
   
   Tags:
@@ -874,6 +873,7 @@ blog/
 | 1.0 Draft | 2025-01-22 | Initial PRD creation |
 | 1.1 Draft | 2025-01-24 | Node 24 + pnpm으로 변경 |
 | 1.2 Draft | 2025-01-24 | Published Date → 빌드 시 자동 부여 방식으로 변경 |
+| 1.3 Draft | 2025-01-24 | Notion API v5, Status 타입 status로 변경 |
 
 ---
 
