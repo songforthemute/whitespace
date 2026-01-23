@@ -106,6 +106,10 @@ async function main() {
 	console.log("\n🔨 Building with Astro...");
 	execSync("pnpm astro build", { stdio: "inherit" });
 
+	// 11. Pagefind 인덱싱
+	console.log("\n🔍 Indexing for search...");
+	execSync("pnpm pagefind --site dist", { stdio: "inherit" });
+
 	console.log("\n✨ Build complete!");
 }
 

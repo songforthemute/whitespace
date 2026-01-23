@@ -19,6 +19,18 @@ header {
 	margin-bottom: 2rem;
 }
 
+nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+}
+
+#search {
+	flex: 1;
+	max-width: 300px;
+}
+
 footer {
 	margin-top: 4rem;
 	color: #666;

@@ -13,6 +13,7 @@
 - RSS Feed (`/feed.xml`)
 - 404 페이지
 - 사이트 설정 상수화 (`src/config.ts`)
+- Pagefind 검색 통합
 
 ## [0.1.0] - 2025-01-24
 
