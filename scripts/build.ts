@@ -2,6 +2,7 @@ import "dotenv/config";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
+import { processPostImages, cleanupOrphanedImages } from "../src/lib/image-handler.js";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const POSTS_PATH = path.join(DATA_DIR, "posts.json");
@@ -11,6 +12,7 @@ interface Post {
 	id: string;
 	title: string;
 	slug: string;
+	blocks: unknown[];
 }
 
 async function loadJsonFile<T>(filePath: string, defaultValue: T): Promise<T> {
@@ -73,7 +75,34 @@ async function main() {
 		console.log(`\n✅ ${newPostCount} new posts assigned publish dates`);
 	}
 
-	// 7. Astro 빌드
+	// 7. 이미지 처리
+	console.log("\n📷 Processing images...");
+	let totalImages = 0;
+
+	for (const post of posts) {
+		console.log(`Processing: ${post.title}`);
+		const { blocks, downloadedCount } = await processPostImages(
+			post.slug,
+			post.blocks as Parameters<typeof processPostImages>[1],
+		);
+		post.blocks = blocks;
+		totalImages += downloadedCount;
+	}
+
+	// 8. 삭제된 글의 이미지 폴더 정리
+	const removedImageDirs = await cleanupOrphanedImages(currentSlugs);
+	if (removedImageDirs > 0) {
+		console.log(`🗑️  Cleaned up ${removedImageDirs} orphaned image directories`);
+	}
+
+	// 9. 이미지 URL이 교체된 posts.json 저장
+	await fs.writeFile(POSTS_PATH, JSON.stringify(posts, null, 2));
+
+	if (totalImages > 0) {
+		console.log(`\n✅ ${totalImages} images downloaded`);
+	}
+
+	// 10. Astro 빌드
 	console.log("\n🔨 Building with Astro...");
 	execSync("pnpm astro build", { stdio: "inherit" });
 
