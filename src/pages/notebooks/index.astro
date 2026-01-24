@@ -8,10 +8,7 @@ const posts = sortByDate(getPostsByType("notebook"), publishedDates);
 ---
 
 <Layout title="Notebooks">
-	<header>
-		<h1>Notebooks</h1>
-		<p class="subtitle">학습 메모, 코드 스니펫, 실험</p>
-	</header>
+	<h1>Notebooks</h1>
 
 	{posts.length === 0 ? (
 		<p>아직 글이 없습니다.</p>
@@ -31,12 +28,8 @@ const posts = sortByDate(getPostsByType("notebook"), publishedDates);
 </Layout>
 
 <style>
-	header {
+	h1 {
 		margin-bottom: 2rem;
-	}
-	.subtitle {
-		color: #666;
-		margin-top: 0.5rem;
 	}
 	.notebook-list {
 		list-style: none;
