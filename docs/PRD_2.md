@@ -74,6 +74,10 @@ Phase 1의 블로그 시스템을 확장하여 다양한 콘텐츠 섹션과 정
 </nav>
 ```
 
+**Active 상태:**
+- 현재 페이지: `font-weight: bold` + `aria-current="page"`
+- 경로 매칭: `pathname.startsWith(path)`
+
 ---
 
 ## 3. Content Types
