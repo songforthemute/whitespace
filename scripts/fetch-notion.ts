@@ -7,31 +7,21 @@ import type {
 	PageObjectResponse,
 	RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-import { CONTENT_TYPES, type ContentType } from "../src/types.js";
+import { CONTENT_TYPES, type ContentType, type Post } from "../src/types.js";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
 // 350ms delay for rate limit (3 req/s)
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-interface Post {
-	id: string;
-	title: string;
-	slug: string;
-	type: ContentType;
-	status: string;
-	description: string | null;
-	tags: string[];
-	lastUpdated: string | null;
-	lastEditedTime: string;
-	blocks: BlockObjectResponse[];
-}
+// fetch-notion 전용 Post 타입 (blocks가 BlockObjectResponse[])
+type FetchedPost = Omit<Post, "blocks"> & { blocks: BlockObjectResponse[] };
 
 function getRichTextContent(richText: RichTextItemResponse[]): string {
 	return richText.map((t) => t.plain_text).join("");
 }
 
-function extractPostProperties(page: PageObjectResponse): Omit<Post, "blocks"> {
+function extractPostProperties(page: PageObjectResponse): Omit<FetchedPost, "blocks"> {
 	const props = page.properties;
 
 	const titleProp = props.Title;
@@ -123,8 +113,8 @@ async function getDataSourceId(notion: Client, databaseId: string): Promise<stri
 	return dataSources[0].id;
 }
 
-async function fetchPublishedPosts(notion: Client, dataSourceId: string): Promise<Post[]> {
-	const posts: Post[] = [];
+async function fetchPublishedPosts(notion: Client, dataSourceId: string): Promise<FetchedPost[]> {
+	const posts: FetchedPost[] = [];
 	let cursor: string | undefined;
 
 	console.log("Fetching published posts from Notion...");

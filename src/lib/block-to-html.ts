@@ -1,39 +1,18 @@
-type RichTextItem = {
-	type: string;
-	text?: {
-		content: string;
-		link?: { url: string } | null;
-	};
-	mention?: {
-		type: string;
-		page?: { id: string };
-		link_preview?: { url: string };
-	};
-	plain_text?: string;
-	href?: string | null;
-	annotations: {
-		bold?: boolean;
-		italic?: boolean;
-		strikethrough?: boolean;
-		underline?: boolean;
-		code?: boolean;
-		color?: string;
-	};
-};
+import type { Block, RichTextItem } from "@/types";
+import { escapeHtml } from "./utils";
 
-type Block = {
+function getImageUrl(image: {
 	type: string;
-	children?: Block[];
-	[key: string]: unknown;
-};
-
-function escapeHtml(text: string): string {
-	return text
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#039;");
+	file?: { url: string };
+	external?: { url: string };
+}): string {
+	if (image.type === "file" && image.file) {
+		return image.file.url;
+	}
+	if (image.type === "external" && image.external) {
+		return image.external.url;
+	}
+	return "";
 }
 
 export function richTextToHtml(richText: RichTextItem[]): string {
@@ -75,20 +54,6 @@ export function richTextToHtml(richText: RichTextItem[]): string {
 			return content;
 		})
 		.join("");
-}
-
-function getImageUrl(image: {
-	type: string;
-	file?: { url: string };
-	external?: { url: string };
-}): string {
-	if (image.type === "file" && image.file) {
-		return image.file.url;
-	}
-	if (image.type === "external" && image.external) {
-		return image.external.url;
-	}
-	return "";
 }
 
 export function blockToHtml(block: Block): string {
@@ -151,7 +116,7 @@ export function blockToHtml(block: Block): string {
 			};
 			const url = getImageUrl(data);
 			const caption = richTextToHtml(data.caption);
-			const alt = escapeHtml(data.caption.map((c) => c.text.content).join(""));
+			const alt = escapeHtml(data.caption.map((c) => c.text?.content || "").join(""));
 
 			if (caption) {
 				return `<figure><img src="${url}" alt="${alt}"><figcaption>${caption}</figcaption></figure>`;

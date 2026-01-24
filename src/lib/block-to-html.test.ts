@@ -186,7 +186,7 @@ describe("blockToHtml", () => {
 		const block = {
 			type: "image",
 			image: {
-				type: "file",
+				type: "file" as const,
 				file: { url: "https://example.com/image.png" },
 				caption: [{ type: "text", text: { content: "Caption" }, annotations: {} }],
 			},
@@ -200,7 +200,7 @@ describe("blockToHtml", () => {
 		const block = {
 			type: "image",
 			image: {
-				type: "external",
+				type: "external" as const,
 				external: { url: "https://example.com/image.png" },
 				caption: [],
 			},

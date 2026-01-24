@@ -1,27 +1,9 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { PATHS } from "@/config";
+import type { Block } from "@/types";
 
 const PUBLIC_IMAGES_DIR = path.join(process.cwd(), PATHS.images);
-
-interface ImageBlock {
-	id: string;
-	type: "image";
-	image: {
-		type: "file" | "external";
-		file?: { url: string };
-		external?: { url: string };
-		caption: unknown[];
-	};
-}
-
-interface Block {
-	id?: string;
-	type: string;
-	children?: Block[];
-	image?: ImageBlock["image"];
-	[key: string]: unknown;
-}
 
 interface ImageInfo {
 	blockId: string;
