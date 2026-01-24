@@ -37,8 +37,8 @@ Phase 1의 블로그 시스템을 확장하여 다양한 콘텐츠 섹션과 정
 
 기타:
   - 전역 Navigation
-  - 통합 RSS
-  - 통합 Sitemap
+  - RSS (Publications만)
+  - Sitemap
 ```
 
 ---
@@ -627,7 +627,7 @@ async function buildResumePage(page) {
 
 ## 10. RSS Feed Updates
 
-### 통합 RSS
+### Publications Only
 
 ```xml
 <!-- /feed.xml -->
@@ -636,32 +636,12 @@ async function buildResumePage(page) {
   <channel>
     <title>whitespace</title>
     <link>https://whitespace.dev</link>
-    <description>Publications, Thoughts, and Notebooks by songforthemute</description>
+    <description>Publications by songforthemute</description>
 
-    <!-- Publication -->
     <item>
       <title>React Performance Optimization</title>
       <link>https://whitespace.dev/publications/react-perf</link>
-      <category>Publication</category>
       <pubDate>Thu, 22 Jan 2025 00:00:00 GMT</pubDate>
-      <description>...</description>
-    </item>
-
-    <!-- Thought -->
-    <item>
-      <title>AI Era Developer</title>
-      <link>https://whitespace.dev/thoughts/ai-era-dev</link>
-      <category>Thought</category>
-      <pubDate>Wed, 21 Jan 2025 00:00:00 GMT</pubDate>
-      <description>...</description>
-    </item>
-
-    <!-- Notebook -->
-    <item>
-      <title>CSS Grid Tips</title>
-      <link>https://whitespace.dev/notebooks/css-grid</link>
-      <category>Notebook</category>
-      <pubDate>Tue, 20 Jan 2025 00:00:00 GMT</pubDate>
       <description>...</description>
     </item>
   </channel>
@@ -670,8 +650,7 @@ async function buildResumePage(page) {
 
 **포함 범위:**
 
-- 최근 20개 (모든 타입 통합)
-- Category로 타입 구분
+- Publications만 (Thoughts, Notebooks 제외)
 - Published Date 기준 정렬
 
 ---
@@ -1051,7 +1030,7 @@ Analytics:
   ✅ Content Database
      - Type: publication, thought, notebook
 
-  ✅ 통합 RSS (모든 타입)
+  ✅ RSS (Publications만)
 
   ✅ 전역 Navigation
 
