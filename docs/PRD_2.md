@@ -49,17 +49,22 @@ Phase 1의 블로그 시스템을 확장하여 다양한 콘텐츠 섹션과 정
 
 ```
 /                       # Landing (Hero, Featured content)
-/publications           # Publications 목록
-/publications/{slug}    # 개별 Publication
-/thoughts               # Thoughts 목록
-/thoughts/{slug}        # 개별 Thought
-/notebooks              # Notebooks 목록
-/notebooks/{slug}       # 개별 Notebook
+/publications           # Publications 목록 (복수)
+/publications/2         # Publications 2페이지 (페이지네이션 예약)
+/publication/{slug}     # 개별 Publication (단수)
+/thoughts               # Thoughts 목록 (복수)
+/thought/{slug}         # 개별 Thought (단수)
+/notebooks              # Notebooks 목록 (복수)
+/notebook/{slug}        # 개별 Notebook (단수)
 /whois                  # 소개 페이지
 /resume                 # 이력서
-/feed.xml               # RSS (모든 콘텐츠)
+/feed.xml               # RSS (Publications만)
 /sitemap.xml            # Sitemap (모든 페이지)
 ```
+
+**RESTful 컨벤션:**
+- 복수형 (`/publications`) = 컬렉션 (목록, 페이지네이션)
+- 단수형 (`/publication/{slug}`) = 개별 리소스
 
 ### Navigation
 

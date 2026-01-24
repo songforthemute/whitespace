@@ -8,7 +8,10 @@
 - 본문 서체 Palatino로 변경 (크로스 플랫폼)
 - 태그 스타일 간소화 (comma-separated)
 - 링크 줄바꿈 개선 (`word-break: break-all`)
-- URL 구조 변경: `/posts` → `/publications`, `/thoughts`, `/notebooks`
+- URL 구조 RESTful 변경:
+  - 목록: `/publications`, `/thoughts`, `/notebooks` (복수)
+  - 상세: `/publication/{slug}`, `/thought/{slug}`, `/notebook/{slug}` (단수)
+  - 페이지네이션 대비: `/publications/2` 형태 예약
 - 이미지 경로 구조: `/images/{type}/{slug}/`
 - RSS Feed: Publications만 포함
 

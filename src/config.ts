@@ -20,11 +20,11 @@ export const NAV_LINKS = [
 	{ href: "/notebooks", label: "Notebooks" },
 ] as const;
 
-// URL 세그먼트 ↔ ContentType 매핑
+// URL 세그먼트 ↔ ContentType 매핑 (상세 페이지용, 단수형)
 export const ROUTE_TYPE_MAP = {
-	publications: "publication",
-	thoughts: "thought",
-	notebooks: "notebook",
+	publication: "publication",
+	thought: "thought",
+	notebook: "notebook",
 } as const;
 
 export type RouteSegment = keyof typeof ROUTE_TYPE_MAP;

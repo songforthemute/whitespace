@@ -19,7 +19,7 @@ const posts = sortByDate(getPostsByType("notebook"), publishedDates);
 				return (
 					<li>
 						<time datetime={date}>{formatDateShort(date)}</time>
-						<a href={`/notebooks/${post.slug}`}>{post.title}</a>
+						<a href={`/notebook/${post.slug}`}>{post.title}</a>
 					</li>
 				);
 			})}

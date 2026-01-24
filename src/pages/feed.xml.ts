@@ -21,8 +21,8 @@ export async function GET() {
 
 			return `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${SITE.url}/publications/${post.slug}</link>
-      <guid isPermaLink="true">${SITE.url}/publications/${post.slug}</guid>
+      <link>${SITE.url}/publication/${post.slug}</link>
+      <guid isPermaLink="true">${SITE.url}/publication/${post.slug}</guid>
       <description>${escapeXml(description)}</description>
       <pubDate>${new Date(pubDate).toUTCString()}</pubDate>
     </item>`;

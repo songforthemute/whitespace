@@ -18,7 +18,7 @@ const posts = sortByDate(getPostsByType("publication"), publishedDates);
 				const date = getPublishedDate(post, publishedDates);
 				return (
 					<article>
-						<h2><a href={`/publications/${post.slug}`}>{post.title}</a></h2>
+						<h2><a href={`/publication/${post.slug}`}>{post.title}</a></h2>
 						<time datetime={date}>{formatDate(date)}</time>
 						{post.description && <p class="description">{post.description}</p>}
 						{post.tags.length > 0 && <p class="tags">{post.tags.join(", ")}</p>}
