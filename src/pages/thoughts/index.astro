@@ -1,6 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { formatDateShort } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import { getPostsByType, getPublishedDate, loadPublishedDates, sortByDate } from "@/lib/posts";
 
 const publishedDates = loadPublishedDates();
@@ -18,7 +18,7 @@ const posts = sortByDate(getPostsByType("thought"), publishedDates);
 				const date = getPublishedDate(post, publishedDates);
 				return (
 					<article>
-						<time datetime={date}>{formatDateShort(date)}</time>
+						<time datetime={date}>{formatDate(date)}</time>
 						<h3><a href={`/thought/${post.slug}`}>{post.title}</a></h3>
 					</article>
 				);
