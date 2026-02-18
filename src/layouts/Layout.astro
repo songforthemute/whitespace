@@ -77,6 +77,7 @@ const jsonLd =
 					new PagefindUI({
 						element: "#search",
 						showSubResults: true,
+						showImages: false,
 						translations: {
 							placeholder: "Search",
 							clear_search: "Clear",
@@ -87,6 +88,19 @@ const jsonLd =
 							searching: "Searching for [SEARCH_TERM]...",
 						},
 					});
+
+					// 검색 활성화 시 글 목록 숨기기 (CSS :has() 보강)
+					const input = document.querySelector(".pagefind-ui__search-input");
+					const main = document.querySelector("main");
+					if (input && main) {
+						const toggle = () => {
+							main.style.display = input.value.trim() ? "none" : "";
+						};
+						input.addEventListener("input", toggle);
+						// Clear 버튼: Pagefind가 input을 비운 뒤 반영
+						document.querySelector(".pagefind-ui__search-clear")
+							?.addEventListener("click", () => requestAnimationFrame(toggle));
+					}
 				});
 			</script>
 			<script src="/pagefind/pagefind-ui.js" is:inline></script>

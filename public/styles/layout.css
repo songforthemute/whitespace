@@ -42,21 +42,108 @@ nav {
   max-width: 42rem;
 
   /* Pagefind 디자인 언어 통일 */
-  --pagefind-ui-scale: 0.75;
+  --pagefind-ui-scale: 1;
   --pagefind-ui-font: Palatino, "Palatino Linotype", serif;
   --pagefind-ui-primary: #000;
   --pagefind-ui-text: #000;
-  --pagefind-ui-border: transparent;
+  --pagefind-ui-background: #fff;
+  --pagefind-ui-border: var(--color-border);
   --pagefind-ui-tag: #eee;
-  --pagefind-ui-border-width: 0;
+  --pagefind-ui-border-width: 1px;
   --pagefind-ui-border-radius: 0;
   --pagefind-ui-image-border-radius: 0;
 }
 
-/* 볼드 해제 (CSS 변수 미지원) */
-#search .pagefind-ui__search-input,
+/* --- 검색 입력: scale 1 기본 64px → 48px, 밑줄 스타일 --- */
+#search .pagefind-ui__search-input {
+  font-weight: 400;
+  height: 3rem;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+}
+
+/* --- 검색 아이콘 위치 (scale 1 기준) --- */
+#search .pagefind-ui__form::before {
+  top: 0.875rem;
+  left: 0;
+  opacity: 0.4;
+}
+
+/* --- Clear 버튼 --- */
+#search .pagefind-ui__search-clear {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  background: transparent;
+}
+
+/* --- 결과 메시지 ("N results for ...") --- */
+#search .pagefind-ui__message {
+  font-weight: 400;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  padding: 1rem 0;
+}
+
+/* --- 결과 항목: 사이트 article과 동일한 하단 구분선 --- */
+#search .pagefind-ui__result {
+  padding: 1.5rem 0;
+  border-top: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 썸네일 빈 공간 제거 (CSS 방어) */
+#search .pagefind-ui__result-thumb {
+  display: none;
+}
+
+/* 결과 제목 */
+#search .pagefind-ui__result-title {
+  font-weight: 400;
+}
+
+/* 결과 링크: 사이트 링크 색상 통일 */
+#search .pagefind-ui__result-link {
+  color: rgb(0, 0, 238);
+  text-decoration: none;
+}
+#search .pagefind-ui__result-link:hover {
+  text-decoration: underline;
+}
+
+/* 발췌문 */
+#search .pagefind-ui__result-excerpt {
+  color: var(--color-subtle);
+  margin-top: 0.25rem;
+}
+
+/* 검색어 하이라이트 */
+#search mark {
+  background: transparent;
+  font-weight: 700;
+  color: inherit;
+}
+
+/* --- Load more 버튼 → 텍스트 링크 스타일 --- */
 #search .pagefind-ui__button {
   font-weight: 400;
+  border: none;
+  background: transparent;
+  color: rgb(0, 0, 238);
+  text-decoration: none;
+  height: auto;
+  padding: 1rem 0;
+  font-size: 1rem;
+  width: auto;
+}
+#search .pagefind-ui__button:hover {
+  text-decoration: underline;
+}
+
+/* --- 검색 활성화 시 글 목록 숨기기 (CSS progressive enhancement) --- */
+body:has(.pagefind-ui__search-input:not(:placeholder-shown)) main {
+  display: none;
 }
 
 footer {
