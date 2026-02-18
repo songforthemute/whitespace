@@ -5,6 +5,7 @@ import * as path from "node:path";
 import { PATHS } from "../src/config.js";
 import { cleanupOrphanedImages, processPostImages } from "../src/lib/image-handler.js";
 import type { ContentType } from "../src/types.js";
+import { generateOgImages } from "./generate-og-images.js";
 
 const POSTS_PATH = path.join(process.cwd(), PATHS.posts);
 const PUBLISHED_DATES_PATH = path.join(process.cwd(), PATHS.publishedDates);
@@ -106,11 +107,16 @@ async function main() {
 		console.log(`\n✅ ${totalImages} images downloaded`);
 	}
 
-	// 10. Astro 빌드
+	// 10. OG 이미지 생성 (Astro가 public/og/를 dist/로 복사하도록 먼저 실행)
+	console.log("\n🖼️  Generating OG images...");
+	const ogCount = await generateOgImages();
+	console.log(`✅ ${ogCount} OG images generated`);
+
+	// 11. Astro 빌드
 	console.log("\n🔨 Building with Astro...");
 	execSync("pnpm astro build", { stdio: "inherit" });
 
-	// 11. Pagefind 인덱싱
+	// 12. Pagefind 인덱싱
 	console.log("\n🔍 Indexing for search...");
 	execSync("pnpm pagefind --site dist", { stdio: "inherit" });
 

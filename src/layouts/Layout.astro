@@ -6,13 +6,43 @@ interface Props {
 	title: string;
 	description?: string;
 	showSearch?: boolean;
+	ogType?: "website" | "article";
+	ogImage?: string;
+	publishedDate?: string;
 }
 
-const { title, description = `${SITE.name} - ${SITE.author}'s Web Logs`, showSearch = false } = Astro.props;
+const {
+	title,
+	description = `${SITE.name} - ${SITE.author}'s Web Logs`,
+	showSearch = false,
+	ogType = "website",
+	ogImage,
+	publishedDate,
+} = Astro.props;
 const siteTitle = title === "Root" ? SITE.name : `${title} | ${SITE.name}`;
 const ogTitle = title === "Root" ? SITE.name : title;
-const ogImageUrl = `${SITE.url}/api/og-image?title=${encodeURIComponent(ogTitle)}`;
+const ogImageUrl = `${SITE.url}/og/${ogImage || "default.png"}`;
 const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
+
+// JSON-LD 구조화 데이터: 상세 페이지는 Article, 그 외는 WebSite
+const jsonLd =
+	ogType === "article"
+		? {
+				"@context": "https://schema.org",
+				"@type": "Article",
+				headline: ogTitle,
+				datePublished: publishedDate,
+				author: { "@type": "Person", name: SITE.author },
+				image: ogImageUrl,
+				url: canonicalUrl,
+			}
+		: {
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				name: SITE.name,
+				url: SITE.url,
+				description,
+			};
 ---
 
 <!doctype html>
@@ -22,13 +52,15 @@ const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content={description} />
 		<title>{siteTitle}</title>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="canonical" href={canonicalUrl} />
 		<meta property="og:title" content={ogTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageUrl} />
 		<meta property="og:url" content={canonicalUrl} />
-		<meta property="og:type" content="article" />
+		<meta property="og:type" content={ogType} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 		<link rel="stylesheet" href="/styles/layout.css" />
 		{showSearch && <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />}
 		<link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/feed.xml" />
@@ -45,6 +77,7 @@ const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 					new PagefindUI({
 						element: "#search",
 						showSubResults: true,
+						showImages: false,
 						translations: {
 							placeholder: "Search",
 							clear_search: "Clear",
@@ -55,6 +88,19 @@ const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 							searching: "Searching for [SEARCH_TERM]...",
 						},
 					});
+
+					// 검색 활성화 시 글 목록 숨기기 (CSS :has() 보강)
+					const input = document.querySelector(".pagefind-ui__search-input");
+					const main = document.querySelector("main");
+					if (input && main) {
+						const toggle = () => {
+							main.style.display = input.value.trim() ? "none" : "";
+						};
+						input.addEventListener("input", toggle);
+						// Clear 버튼: Pagefind가 input을 비운 뒤 반영
+						document.querySelector(".pagefind-ui__search-clear")
+							?.addEventListener("click", () => requestAnimationFrame(toggle));
+					}
 				});
 			</script>
 			<script src="/pagefind/pagefind-ui.js" is:inline></script>
