@@ -39,9 +39,9 @@ nav {
   --pagefind-ui-font: Palatino, "Palatino Linotype", serif;
   --pagefind-ui-primary: #000;
   --pagefind-ui-text: #000;
-  --pagefind-ui-border: #eee;
+  --pagefind-ui-border: transparent;
   --pagefind-ui-tag: #eee;
-  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-width: 0;
   --pagefind-ui-border-radius: 0;
   --pagefind-ui-image-border-radius: 0;
 }

@@ -5,11 +5,12 @@ import { SITE } from "@/config";
 interface Props {
 	title: string;
 	description?: string;
+	showSearch?: boolean;
 }
 
-const { title, description = `${SITE.name} - ${SITE.author}'s Web Logs` } = Astro.props;
-const siteTitle = title === "Home" ? SITE.name : `${title} | ${SITE.name}`;
-const ogTitle = title === "Home" ? SITE.name : title;
+const { title, description = `${SITE.name} - ${SITE.author}'s Web Logs`, showSearch = false } = Astro.props;
+const siteTitle = title === "Root" ? SITE.name : `${title} | ${SITE.name}`;
+const ogTitle = title === "Root" ? SITE.name : title;
 const ogImageUrl = `${SITE.url}/api/og-image?title=${encodeURIComponent(ogTitle)}`;
 const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 ---
@@ -29,33 +30,35 @@ const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 		<meta property="og:type" content="article" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<link rel="stylesheet" href="/styles/layout.css" />
-		<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+		{showSearch && <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />}
 		<link rel="alternate" type="application/rss+xml" title={`${SITE.name} RSS`} href="/feed.xml" />
 	</head>
 	<body>
 		<header>
 			<Nav />
-			<div id="search"></div>
 		</header>
-		<script>
-			window.addEventListener("DOMContentLoaded", () => {
-				// @ts-ignore
-				new PagefindUI({
-					element: "#search",
-					showSubResults: true,
-					translations: {
-						placeholder: "Search",
-						clear_search: "Clear",
-						load_more: "Load more results",
-						zero_results: "No results for [SEARCH_TERM]",
-						many_results: "[COUNT] results for [SEARCH_TERM]",
-						one_result: "[COUNT] result for [SEARCH_TERM]",
-						searching: "Searching for [SEARCH_TERM]...",
-					},
+		{showSearch && (
+			<div id="search"></div>
+			<script>
+				window.addEventListener("DOMContentLoaded", () => {
+					// @ts-ignore
+					new PagefindUI({
+						element: "#search",
+						showSubResults: true,
+						translations: {
+							placeholder: "Search",
+							clear_search: "Clear",
+							load_more: "Load more results",
+							zero_results: "No results for [SEARCH_TERM]",
+							many_results: "[COUNT] results for [SEARCH_TERM]",
+							one_result: "[COUNT] result for [SEARCH_TERM]",
+							searching: "Searching for [SEARCH_TERM]...",
+						},
+					});
 				});
-			});
-		</script>
-		<script src="/pagefind/pagefind-ui.js" is:inline></script>
+			</script>
+			<script src="/pagefind/pagefind-ui.js" is:inline></script>
+		)}
 		<main>
 			<slot />
 		</main>

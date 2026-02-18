@@ -7,7 +7,7 @@ const publishedDates = loadPublishedDates();
 const posts = sortByDate(getPostsByType("thought"), publishedDates);
 ---
 
-<Layout title="Thoughts">
+<Layout title="Thoughts" showSearch>
 	<h1>Thoughts</h1>
 
 	{posts.length === 0 ? (
