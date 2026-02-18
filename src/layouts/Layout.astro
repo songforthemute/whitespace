@@ -7,7 +7,7 @@ interface Props {
 	description?: string;
 }
 
-const { title, description = `${SITE.name} - ${SITE.author}의 블로그` } = Astro.props;
+const { title, description = `${SITE.name} - ${SITE.author}'s Web Logs` } = Astro.props;
 const siteTitle = title === "Home" ? SITE.name : `${title} | ${SITE.name}`;
 const ogTitle = title === "Home" ? SITE.name : title;
 const ogImageUrl = `${SITE.url}/api/og-image?title=${encodeURIComponent(ogTitle)}`;
@@ -40,7 +40,19 @@ const canonicalUrl = Astro.url.href.replace(Astro.url.origin, SITE.url);
 		<script>
 			window.addEventListener("DOMContentLoaded", () => {
 				// @ts-ignore
-				new PagefindUI({ element: "#search", showSubResults: true });
+				new PagefindUI({
+					element: "#search",
+					showSubResults: true,
+					translations: {
+						placeholder: "Search",
+						clear_search: "Clear",
+						load_more: "Load more results",
+						zero_results: "No results for [SEARCH_TERM]",
+						many_results: "[COUNT] results for [SEARCH_TERM]",
+						one_result: "[COUNT] result for [SEARCH_TERM]",
+						searching: "Searching for [SEARCH_TERM]...",
+					},
+				});
 			});
 		</script>
 		<script src="/pagefind/pagefind-ui.js" is:inline></script>

@@ -1,41 +1,58 @@
 body {
-	max-width: 42rem;
-	margin: 0 auto;
-	padding: 2rem 1rem;
-	font-family: Palatino, "Palatino Linotype", serif;
-	line-height: 1.6;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: Palatino, "Palatino Linotype", serif;
+  line-height: 1.6;
 }
 
 img {
-	max-width: 100%;
-	height: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 pre {
-	overflow-x: auto;
+  overflow-x: auto;
 }
 
 a {
-	word-break: break-all;
+  word-break: break-all;
 }
 
 header {
-	margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 nav {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 #search {
-	flex: 1;
-	max-width: 300px;
+  flex: 1;
+  max-width: 42rem;
+
+  /* Pagefind 디자인 언어 통일 */
+  --pagefind-ui-scale: 0.75;
+  --pagefind-ui-font: Palatino, "Palatino Linotype", serif;
+  --pagefind-ui-primary: #000;
+  --pagefind-ui-text: #000;
+  --pagefind-ui-border: #eee;
+  --pagefind-ui-tag: #eee;
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 0;
+  --pagefind-ui-image-border-radius: 0;
+}
+
+/* 볼드 해제 (CSS 변수 미지원) */
+#search .pagefind-ui__search-input,
+#search .pagefind-ui__button {
+  font-weight: 400;
 }
 
 footer {
-	margin-top: 4rem;
-	color: #666;
+  margin-top: 4rem;
+  color: #666;
 }
