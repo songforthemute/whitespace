@@ -28,7 +28,13 @@ const publishedDate = getPublishedDate(post, publishedDates);
 const content = blocksToHtml(post.blocks);
 ---
 
-<Layout title={post.title} description={post.description || undefined}>
+<Layout
+	title={post.title}
+	description={post.description || undefined}
+	ogType="article"
+	ogImage={`${post.type}-${post.slug}.png`}
+	publishedDate={publishedDate}
+>
 	<article>
 		<header>
 			<h1>{post.title}</h1>
@@ -47,11 +53,11 @@ const content = blocksToHtml(post.blocks);
 		margin-bottom: 0.5rem;
 	}
 	article time {
-		color: #666;
+		color: var(--color-muted);
 	}
 	.tags {
 		margin-top: 0.5rem;
-		font-size: 0.875rem;
-		color: #666;
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
 	}
 </style>
